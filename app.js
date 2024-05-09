@@ -11,6 +11,7 @@ const { sequelize } = require("./models");
 dotenv.config(); // process.env
 const pageRouter = require("./routes/page");
 const authRouter = require("./routes/auth");
+const postRouter = require("./routes/post");
 const passportConfig = require("./passport");
 
 const app = express();
@@ -33,6 +34,7 @@ sequelize
 
 app.use(morgan("dev")); // loging 개발 모드, combined : 배포할때 (자세하게 로그를 남기고 안남기고의 차이가 있다. 서버의 용량을 많이 차지하기 때문에 개발시에만 dev로 한다.)
 app.use(express.static(path.join(__dirname, "public"))); // public 폴더를 static 폴더로 만들어준다.
+app.use("/img", express.static(path.join(__dirname, "uploads")));
 app.use(express.json()); // json 요청 받을 수 있게
 app.use(express.urlencoded({ extended: false })); // form 요청 받을 수 있게
 app.use(cookieParser(process.env.COOKIE_SECRET)); // 쿠키 연동 처리
@@ -52,6 +54,7 @@ app.use(passport.session()); // connect.sid라는 이름으로 세션 쿠키가 
 
 app.use("/", pageRouter);
 app.use("/auth", authRouter);
+app.use("/post", postRouter);
 
 app.use((req, res, next) => {
   // 404 NOT FOUND
